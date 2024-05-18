@@ -2,8 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Url } from "next/dist/shared/lib/router/router";
 import { Octokit } from "octokit";
 import getCommitStats from "~/server/getCommitCount";
-import getRepoStats from "~/server/getJSPackages";
+import getRepoStats from "~/server/getRepoStats";
 import getLanguages from "~/server/getLanguages";
+import getFrameworks from "~/server/getJSPackages";
 
 export default async function getStats(req: NextApiRequest, res: NextApiResponse) {
 	let userUrlStr = req.query.userUrl
@@ -25,8 +26,9 @@ export default async function getStats(req: NextApiRequest, res: NextApiResponse
 	const commitStats = await getCommitStats(user, octokit);
 	const repoStats = await getRepoStats(user, repoRes.data, octokit);
 	const languages = await getLanguages(user, repoRes.data, octokit);
+	const frameworks = await getFrameworks(user, repoRes.data, octokit);
 
-	res.status(200).json({ message: "success", commitStats, repoStats, languages});
+	res.status(200).json({ message: "success", commitStats, repoStats, languages, frameworks});
 }
 
 function isValidGithubURL(urlStr: string | string[]): boolean {
