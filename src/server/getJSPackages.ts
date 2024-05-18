@@ -15,13 +15,14 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
                repo:  repo.name,
                path: "package.json",
             })
-         } catch (e) {
-            console.log(e);
+         } catch (_) {
+            // Most likely due to 404
          }
 
          if (contentRes !== undefined && contentRes.status == 200) {
             let { dependencies  } = JSON.parse(atob(contentRes.data.content))
-            allReposDependencies.push(Object.keys(dependencies))
+            if (dependencies !== undefined)
+               allReposDependencies.push(Object.keys(dependencies))
          }
    }
    for (let i = 0; i < allReposDependencies.length; i++) {
