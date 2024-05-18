@@ -2,7 +2,7 @@ export default async function getLanguages(user: string, repos: Array<any>, octo
 	
 	if (!user || !repos || !octokit) return null;
 
-	const languages = [];
+	const languages = {};
 	
 	for (const value of repos) {
 		const repoLanguages = await octokit.request('GET /repos/{owner}/{repo}/languages', {
@@ -15,10 +15,10 @@ export default async function getLanguages(user: string, repos: Array<any>, octo
 		
 		if (!repoLanguages) return null;
 
-		for (const [lang, size] of Object.values(repoLanguages)) {
-			if (lang in languages.keys()) languages[lang] += size;
-			else languages.push({key: lang, value: size});
-		}
+		for (const [language, size] of Object.entries(repoLanguages.data)) {
+			if (language in languages) languages[language] += size;
+			else languages[language] = size;
+ 		}
 	}
 
 	return languages;
