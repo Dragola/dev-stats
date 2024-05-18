@@ -2,27 +2,27 @@ import Head from "next/head";
 import SearchBar from "./components/Search";
 import MainView, { type User } from "./components/MainView";
 import { useRef, useState } from "react";
-import {motion} from "framer-motion"
+import useLocalStore from "./hooks/useLocalStore";
 
 export default function Home() {
-	const [users, setUsers] = useState<User[]>([{
+	const [users, setUsers] = useLocalStore<User[]>([{
 		profileImage: "https://avatars.githubusercontent.com/u/107800884?v=4",
 		id: "@FadedBronze",	
 		websiteUrl: "https://samyat.netlify.app",
 		repoCount: 387,
 		commitCount: 16,
-		frameworks: [["React", 3], ["Express", 5]],
+		packages: [["React", 3], ["Express", 5]],
 		languages: [["Typescript", 3], ["Javascript", 4], ["Kotlin", 5], ["Java", 6]],
 	}, {
 		profileImage: "https://avatars.githubusercontent.com/u/45637546?v=4",
 		id: "@Dragola",	
 		repoCount: 363,
 		commitCount: 18,
-		frameworks: [["React", 3], ["Express", 5]],
+		packages: [["React", 3], ["Express", 5]],
 		languages: [["Typescript", 3], ["Javascript", 4], ["Kotlin", 5], ["Java", 6]],
-	}])	
+	}], "profiles")	
 
-	const lastActiveUser = useRef<User>(users[0]);
+	const lastActiveUser = useRef<User>(users[0]!);
 	const [activeUser, setActiveUser] = useState(users[0]!.id)	
 
 	const user = users.find(({id}) => id === activeUser)!;
@@ -39,12 +39,12 @@ export default function Home() {
 					<SearchBar activeUser={activeUser} setActiveUser={(newActiveUser) => {
 						lastActiveUser.current = user 
 						setActiveUser(newActiveUser)
-					}} users={users}></SearchBar>
+					}} setUsers={setUsers} users={users}></SearchBar>
 					<MainView 
 						commitCount={user.commitCount}
 						repoCount={user.repoCount}
 						websiteUrl={user.websiteUrl}
-						frameworks={user.frameworks}
+						packages={user.packages}
 						languages={user.languages}
 						id={user.id}
 						profileImage={user.profileImage}

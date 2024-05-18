@@ -10,7 +10,7 @@ export type User = {
 	repoCount: number,
 	websiteUrl?: string,
 	languages: [string, number][],
-	frameworks: [string, number][],
+	packages: [string, number][],
 }
 
 export default function MainView(props: User) {
@@ -18,8 +18,8 @@ export default function MainView(props: User) {
 
 	useEffect(() => {
 		void animate("div", {opacity: ["0%", "100%"]}, {duration: 0.8});
-		void animate(".deez", {x: ["-50vw", "0"]}, {duration: 0.5});
-	}, [props.profileImage, animate])
+		void animate(".deez", {x: ["-100vw", "0"]}, {duration: 0.5});
+	}, [props.profileImage])
 
 	return (
 		<motion.div 
@@ -45,8 +45,8 @@ export default function MainView(props: User) {
 				</div>
 				<div>
 					<h3>Frameworks {"&"} Libraries:</h3>
-					{props.frameworks.map(([framework]) => {
-						return <p key={framework} style={GeistSans.style}>{framework}</p>
+					{props.packages.map(([packages]) => {
+						return <p key={packages} style={GeistSans.style}>{packages}</p>
 					})}	
 				</div>
 				<div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 export default function useLocalStore<T>(value: T, name: string) {
 	const [local, setLocal] = useState<T>(value)
@@ -22,5 +22,5 @@ export default function useLocalStore<T>(value: T, name: string) {
 		localStorage.setItem(name, JSON.stringify(local));	
 	}, [local, name])
 
-	return [local, setLocal];
+	return [local, setLocal] as [T, Dispatch<SetStateAction<T>>];
 }
