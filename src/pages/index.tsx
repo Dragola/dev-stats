@@ -1,10 +1,11 @@
 import Head from "next/head";
 import SearchBar from "./components/Search";
 import MainView, { type User } from "./components/MainView";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import {motion} from "framer-motion"
 
 export default function Home() {
-	const [users, setUsers] = useState([{
+	const [users, setUsers] = useState<User[]>([{
 		profileImage: "https://avatars.githubusercontent.com/u/107800884?v=4",
 		id: "@FadedBronze",	
 		websiteUrl: "https://samyat.netlify.app",
@@ -21,6 +22,7 @@ export default function Home() {
 		languages: [["Typescript", 3], ["Javascript", 4], ["Kotlin", 5], ["Java", 6]],
 	}])	
 
+	const lastActiveUser = useRef<User>(users[0]);
 	const [activeUser, setActiveUser] = useState(users[0]!.id)	
 
 	const user = users.find(({id}) => id === activeUser)!;
@@ -34,18 +36,19 @@ export default function Home() {
 			</Head>
 			<div className="w-screen h-screen bg-black flex justify-center items-center">
 				<div className="w-2/3 flex gap-8 flex-col">
-					<SearchBar activeUser={activeUser} setActiveUser={setActiveUser} users={users}></SearchBar>
-					<div>
-						<MainView
-							commitCount={user.commitCount}
-							repoCount={user.repoCount}
-							websiteUrl={user.websiteUrl}
-							frameworks={user.frameworks}
-							languages={user.languages}
-							id={user.id}
-							profileImage={user.profileImage}
-						></MainView>
-					</div>
+					<SearchBar activeUser={activeUser} setActiveUser={(newActiveUser) => {
+						lastActiveUser.current = user 
+						setActiveUser(newActiveUser)
+					}} users={users}></SearchBar>
+					<MainView 
+						commitCount={user.commitCount}
+						repoCount={user.repoCount}
+						websiteUrl={user.websiteUrl}
+						frameworks={user.frameworks}
+						languages={user.languages}
+						id={user.id}
+						profileImage={user.profileImage}
+					></MainView>
 				</div>
 			</div>
 		</>
