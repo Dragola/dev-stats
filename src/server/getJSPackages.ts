@@ -27,10 +27,9 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
    }
    for (let i = 0; i < allReposDependencies.length; i++) {
       for (let j = 0; j < allReposDependencies[i].length; j++) {
-         // if (allReposDependencies[i][j])
          let currCounter = counters[allReposDependencies[i][j]]
          counters[allReposDependencies[i][j]] = currCounter == undefined ? 1 : currCounter + 1;
       }
    }
-	return counters
+	return counters;
 }

@@ -28,8 +28,9 @@ export default async function getStats(req: NextApiRequest, res: NextApiResponse
    const languages = await getLanguages(user, repoRes.data, octokit);
    const frameworks = await getFrameworks(user, repoRes.data, octokit);
    const userStats = await getUserStats(user, octokit);
+   const timestamp = Date.now();
 
-   res.status(200).json({ message: "success", commitStats, repoStats, languages, frameworks, userStats });
+   res.status(200).json({ message: "success", commitStats, repoStats, languages, frameworks, userStats , timestamp});
 }
 
 function isValidGithubURL(urlStr: string | string[]): boolean {
