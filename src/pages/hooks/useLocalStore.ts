@@ -18,9 +18,8 @@ export default function useLocalStore<T>(value: T, name: string) {
 		
 	}, [name])
 
-	useEffect(() => {	
-		localStorage.setItem(name, JSON.stringify(local));	
-	}, [local, name])
-
-	return [local, setLocal] as [T, Dispatch<SetStateAction<T>>];
+	return [local, (value: T) => {
+		setLocal(value)
+		localStorage.setItem(name, JSON.stringify(value));	
+	}] as [T, Dispatch<SetStateAction<T>>];
 }

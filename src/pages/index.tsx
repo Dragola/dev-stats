@@ -5,27 +5,12 @@ import { useRef, useState } from "react";
 import useLocalStore from "./hooks/useLocalStore";
 
 export default function Home() {
-	const [users, setUsers] = useLocalStore<User[]>([{
-		profileImage: "https://avatars.githubusercontent.com/u/107800884?v=4",
-		id: "@FadedBronze",	
-		websiteUrl: "https://samyat.netlify.app",
-		repoCount: 387,
-		commitCount: 16,
-		packages: [["React", 3], ["Express", 5]],
-		languages: [["Typescript", 3], ["Javascript", 4], ["Kotlin", 5], ["Java", 6]],
-	}, {
-		profileImage: "https://avatars.githubusercontent.com/u/45637546?v=4",
-		id: "@Dragola",	
-		repoCount: 363,
-		commitCount: 18,
-		packages: [["React", 3], ["Express", 5]],
-		languages: [["Typescript", 3], ["Javascript", 4], ["Kotlin", 5], ["Java", 6]],
-	}], "profiles")	
+	const [users, setUsers] = useLocalStore<User[]>([], "profiles")	
 
-	const lastActiveUser = useRef<User>(users[0]!);
-	const [activeUser, setActiveUser] = useState(users[0]!.id)	
+	const lastActiveUser = useRef<User>();
+	const [activeUser, setActiveUser] = useState<string>()	
 
-	const user = users.find(({id}) => id === activeUser)!;
+	const user = users.find(({id}) => id === activeUser);
 
 	return (
 		<>
@@ -40,7 +25,7 @@ export default function Home() {
 						lastActiveUser.current = user 
 						setActiveUser(newActiveUser)
 					}} setUsers={setUsers} users={users}></SearchBar>
-					<MainView 
+					{user && <MainView 
 						commitCount={user.commitCount}
 						repoCount={user.repoCount}
 						websiteUrl={user.websiteUrl}
@@ -48,7 +33,7 @@ export default function Home() {
 						languages={user.languages}
 						id={user.id}
 						profileImage={user.profileImage}
-					></MainView>
+					></MainView>}
 				</div>
 			</div>
 		</>

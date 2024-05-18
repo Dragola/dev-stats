@@ -5,7 +5,7 @@ export default function SearchBar(props: {
 	users: User[],
 	setUsers: (newUsers: User[]) => void,
 	setActiveUser: (activeUserId: string) => void,
-	activeUser: string,
+	activeUser?: string,
 }) {
 	return  (
 		<div className="flex flex-col gap-4 justify-center w-full">
@@ -25,16 +25,17 @@ export default function SearchBar(props: {
 					repoStats: { 
 						totalRepos: number
 					}, 
-					languages: Record<string, number> 
+					languages: Record<string, number>,
+					userStats: { avatar_url:string, blog?: string },
 				}) => {
 					console.log(data)
 
 					const thing: User = {
-						profileImage: "/",
+						profileImage: data.userStats.avatar_url,
 						id: "@" + value,
 						commitCount: data.commitStats,
 						repoCount: data.repoStats.totalRepos,
-						websiteUrl: "something",
+						websiteUrl: data.userStats.blog === "" ? undefined : data.userStats.blog,
 						languages: Object.keys(data.languages).map((language) => {
 							return [language,data.languages[language]!]
 						}),
@@ -52,8 +53,8 @@ export default function SearchBar(props: {
 					backgroundColor: "#ffffff",
 					color: "#374151"
 				}} animate={{
-					backgroundColor: props.activeUser === id ? "#ffffff" : "#374151",
-					color: props.activeUser === id ?  "#374151" : "#ffffff",
+					backgroundColor: props.activeUser && props.activeUser === id ? "#ffffff" : "#374151",
+					color: props.activeUser && props.activeUser === id ?  "#374151" : "#ffffff",
 				}} onClick={() => props.setActiveUser(id)} className={
 					"rounded-full px-6 py-1" 
 				} key={id}>{id}</motion.button>)
