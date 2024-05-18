@@ -15,18 +15,18 @@ export default async function getStats(req: NextApiRequest, res: NextApiResponse
 	let userUrl = new URL(userUrlStr as string)
 	let user = userUrl.pathname.substring(1)
 
-   const octokit = new Octokit({
+   	const octokit = new Octokit({
       auth: process.env.GITHUB_AUTH,
-   })
+   	})
 	let repoRes = await octokit.rest.repos.listForUser({
 		username: user
 	})
 
 	const commitStats = await getCommitStats(user, octokit);
 	const repoStats = await getRepoStats(user, repoRes.data, octokit);
-	const languages = await getLanguages();
+	const languages = await getLanguages(user, repoRes.data, octokit);
 
-	res.status(200).json({ message: "success", commitCount: commitStats, jsPackages: repoStats, languages });
+	res.status(200).json({ message: "success", commitStats, repoStats, languages});
 }
 
 function isValidGithubURL(urlStr: string | string[]): boolean {
