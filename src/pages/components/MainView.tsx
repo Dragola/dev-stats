@@ -18,8 +18,8 @@ export default function MainView(props: User) {
 
 	useEffect(() => {
 		void animate("div", {opacity: ["0%", "100%"]}, {duration: 0.8});
-		void animate(".deez", {x: ["-100vw", "0"]}, {duration: 0.5});
-	}, [props.profileImage])
+		void animate(".deez", {x: ["-50vw", "0"]}, {duration: 0.5});
+	}, [props.profileImage, animate])
 
 	return (
 		<motion.div 
