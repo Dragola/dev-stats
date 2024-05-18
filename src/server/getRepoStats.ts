@@ -37,7 +37,6 @@ export default async function getRepoStats(user: string, repos: Array<any>,octok
                lastYearCount += week?.total
             }
              
-            console.log("Done " + repoName)
             currentWork[i] = true;
          } else {
             isFinished = false;
