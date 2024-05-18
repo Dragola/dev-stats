@@ -16,7 +16,7 @@ export default async function getRepoStats(user: string, repos: Array<any>,octok
    while (!isFinished) {
       isFinished = true
       for (let i = 0; i < totalRepos; i++) {
-         if (currentWork[i])
+         if (repos[i].fork || currentWork[i])
             continue;
 
          let repoName = repos[i].name;
