@@ -1,6 +1,5 @@
-import {motion} from "framer-motion"
-import {User} from "../components/MainView"
-import MainView from "../components/MainView"
+import { motion } from "framer-motion";
+import { type User } from "../components/MainView";
 
 export default function SearchBar(props: {
 	users: User[],
@@ -15,25 +14,35 @@ export default function SearchBar(props: {
 					return;
 				}
 
+				const value = e.currentTarget.value;
+
 				fetch("api/getStats?userUrl=https://github.com/" + e.currentTarget.value, {
 					method: "GET",
 				}).then((res) => {
 					return res.json()
-				}).then(data => {
-					console.log(data);
-					props.setUsers([...props.users,
-						{
-							profileImage:"soething",
-							id: e.currentTarget.value,
-							commitCount:data.commitStats,
-							repoCount:data.repoStats.totalRepos,
-							websiteUrl: "something",
-							languages: Object.keys(data.languages).map((language)=>{
-								return[language,data.languages[language]]
-							}),
-							packages:[]
-						}
-					])
+				}).then((data: { 
+					commitStats: number, 
+					repoStats: { 
+						totalRepos: number
+					}, 
+					languages: Record<string, number> 
+				}) => {
+					console.log(data)
+
+					const thing: User = {
+						profileImage: "/",
+						id: "@" + value,
+						commitCount: data.commitStats,
+						repoCount: data.repoStats.totalRepos,
+						websiteUrl: "something",
+						languages: Object.keys(data.languages).map((language) => {
+							return [language,data.languages[language]!]
+						}),
+						packages:[]
+					}
+
+					console.log(data, thing);
+					props.setUsers([...props.users, thing]);
 				}).catch((err) => {
 					console.error(err)	
 				})
@@ -44,7 +53,7 @@ export default function SearchBar(props: {
 					color: "#374151"
 				}} animate={{
 					backgroundColor: props.activeUser === id ? "#ffffff" : "#374151",
-					color: props.activeUser === id ?  "#374151" : "#ffffff"
+					color: props.activeUser === id ?  "#374151" : "#ffffff",
 				}} onClick={() => props.setActiveUser(id)} className={
 					"rounded-full px-6 py-1" 
 				} key={id}>{id}</motion.button>)
