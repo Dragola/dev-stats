@@ -25,7 +25,7 @@ export default function MainView(props: User) {
 	return (
 		<motion.div 
 			ref={scope}
-			className="gap-12 border-white border-b flex flex-wrap justify-center">
+			className="gap-12 border-white pb-4  border-b flex flex-wrap justify-center">
 			<div className="flex flex-col gap-12 deez">
 				<img
 					alt="profile"
@@ -37,7 +37,7 @@ export default function MainView(props: User) {
 					<p className="text-white koulen text-3xl" style={koulen.style}>{props.id}</p>
 				</div>	
 			</div>
-			<motion.div className={"flex flex-wrap justify-around grow gap-6 text-white [&>div>h3]:text-2xl " + koulen.className}>
+			<motion.div className={"flex flex-wrap sm2:justify-around grow gap-6 text-white [&>div>h3]:text-2xl " + koulen.className}>
 				<div>
 					<h3>Languages:</h3>
 					{props.languages.map(([language]) => {
