@@ -28,37 +28,37 @@ export default async function getStats(req: NextApiRequest, res: NextApiResponse
    console.log('Check if repoRes is rate limited!');
 
    const checkAPI = checkForRateLimit(repoRes);
-   if (checkAPI.rateLimited) return res.status(checkAPI.statusCode).json({rateLimit: checkAPI});
+   if (checkAPI.rateLimited) return res.status(checkAPI.statusCode ?? 400).json({rateLimit: checkAPI});
 
    console.log('checkAPI- not rate limited!');
 
    const commitStats = await getCommitStats(user, octokit);
    if (commitStats === -1) return res.status(500).json({message: 'Bad or missing data'});
-   else if (typeof commitStats === 'object') return res.status(commitStats.statusCode).json({message: 'RateLimited!', rateLimit: commitStats});
+   else if (typeof commitStats === 'object') return res.status(commitStats.statusCode ?? 400).json({message: 'RateLimited!', rateLimit: commitStats});
 
    console.log('commitStats collected');
 
    const repoStats = await getRepoStats(user, repoRes.data, octokit);
    if (!repoStats) return res.status(500).json({message: 'Bad or missing data'});
-   else if ('timeToReset' in repoStats) return res.status(repoStats.statusCode).json({message: 'RateLimited!', rateLimit: repoStats});
+   else if ('timeToReset' in repoStats) return res.status(repoStats.statusCode ?? 400).json({message: 'RateLimited!', rateLimit: repoStats});
 
    console.log('repoStats collected');
 
    const languages = await getLanguages(user, repoRes.data, octokit);
    if (!languages) return res.status(500).json({message: 'Bad or missing data'});
-   else if ('timeToReset' in languages) return res.status(languages.statusCode).json({message: 'RateLimited!', rateLimit: languages});
+   else if ('timeToReset' in languages) return res.status(languages.statusCode ?? 400).json({message: 'RateLimited!', rateLimit: languages});
 
    console.log('languages collected');
 
    const frameworks = await getFrameworks(user, repoRes.data, octokit);
    if (!frameworks) return res.status(500).json({message: 'Bad or missing data'});
-   else if ('timeToReset' in frameworks) return res.status(frameworks.statusCode).json({message: 'RateLimited!', rateLimit: frameworks});
+   else if ('timeToReset' in frameworks) return res.status(frameworks.statusCode ?? 400).json({message: 'RateLimited!', rateLimit: frameworks});
 
    console.log('frameworks collected');
 
    const userStats = await getUserStats(user, octokit);
    if (!userStats) return res.status(500).json({message: 'Bad or missing data'});
-   else if ('timeToReset' in userStats) return res.status(userStats.statusCode).json({message: 'RateLimited!', rateLimit: userStats});
+   else if ('timeToReset' in userStats) return res.status(userStats.statusCode ?? 400).json({message: 'RateLimited!', rateLimit: userStats});
 
    console.log('userStats collected');
 

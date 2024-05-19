@@ -1,7 +1,8 @@
 export type TFunctionResponse = {
-    statusCode: number,
+    statusCode?: number,
     rateLimited: boolean,
     timeToReset: number,
+    error?:string
 }
 
 export function checkForRateLimit(response: any): TFunctionResponse {
@@ -11,7 +12,8 @@ export function checkForRateLimit(response: any): TFunctionResponse {
     if (!headers) return {
         statusCode: response.status,
         rateLimited: false,
-        timeToReset: -1
+        timeToReset: -1,
+        error: 'No headers!'
     } 
 
     if ('x-ratelimit-remaining' in headers && headers['x-ratelimit-remaining'] === 0) {
@@ -19,13 +21,14 @@ export function checkForRateLimit(response: any): TFunctionResponse {
         return {
             statusCode: response.status,
             rateLimited: true,
-            timeToReset: headers[`x-ratelimit-reset`]
+            timeToReset: headers[`x-ratelimit-reset`],
+            error: 'No remaining attempts'
         }
     }
 
     return {
         statusCode: response.status,
         rateLimited: false,
-        timeToReset: 0
+        timeToReset: 0,
     }
 }
