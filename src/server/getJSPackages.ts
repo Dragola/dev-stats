@@ -1,6 +1,7 @@
 import { Octokit } from "octokit"
+import { TFunctionResponse, checkForRateLimit } from "./checkForRateLimit";
 
-export default async function getFrameworks(user: string, repos: Array<any>,octokit: Octokit) {
+export default async function getFrameworks(user: string, repos: Array<any>,octokit: Octokit): Promise<any| TFunctionResponse> {
    let allReposDependencies: Array<Array<string>> = [];
    let counters: {[key: string]: number} = {};
    for (let i = 0; i < repos.length; i++) {
@@ -19,7 +20,10 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
             continue;
          }
 
-         if (!contentRes || contentRes.status !== 200 || !contentRes.data) return null;
+         const checkAPI = checkForRateLimit(contentRes);
+         if (checkAPI.rateLimited) return checkAPI;
+
+         if (contentRes.status !== 200 || !contentRes.data) return null;
 
          const { dependencies } = JSON.parse(atob(contentRes.data.content))
          if (dependencies !== undefined) allReposDependencies.push(Object.keys(dependencies))
