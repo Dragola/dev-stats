@@ -1,7 +1,10 @@
 import { GeistSans } from "geist/font/sans";
 import { koulen } from "../_app";
 import { motion, useAnimate } from "framer-motion"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { IoShareSocial, IoCopy } from "react-icons/io5";
+import { IconContext } from "react-icons";
+import QRCode from "react-qr-code" ;
 
 export type User = {
 	profileImage: string,
@@ -16,6 +19,28 @@ export type User = {
 
 export default function MainView(props: User) {
 	const [scope, animate] = useAnimate()
+	const [isCopyClicked, setIsCopyClicked] = useState(false)
+	const [isShareSocialClicked, setIsShareSocialClicked] = useState(false)
+	const [isQRCodeClicked, setIsQRCodeClicked] = useState(false)
+	const [midScreenDistance, setMidScreenDistance] = useState([0, 0])
+
+	const handleCopy = () => {
+		navigator.clipboard.writeText("YOUR-URL-STRING")
+		setIsCopyClicked(true)
+		setTimeout(() => setIsCopyClicked(false), 100)
+	}
+	const handleShareSocial = () => {
+		navigator.clipboard.writeText("DISCORD-MDX")
+		setIsShareSocialClicked(true)
+		setTimeout(() => setIsShareSocialClicked(false), 100)
+	}
+	const handleQRCodeClicked = (e: React.MouseEvent<SVGElement, MouseEvent>) => {
+		const clientRect = e.currentTarget.getBoundingClientRect()
+		const midElX = clientRect.x + clientRect.width / 2
+		const midElY = clientRect.y + clientRect.height / 2
+		setMidScreenDistance([window.innerWidth / 2 - midElX, window.innerHeight / 2 - midElY])
+		setIsQRCodeClicked(true)
+	}
 
 	useEffect(() => {
 		void animate("div", {opacity: ["0%", "100%"]}, {duration: 0.8});
@@ -33,8 +58,68 @@ export default function MainView(props: User) {
 					className="max-lg:justify-center border border-gray-700 rounded-full object-cover object-center w-80 h-80"
 				>
 				</img>
-				<div className="flex gap-4">
-					<p className="text-white koulen text-3xl" style={koulen.style}>{props.id}</p>
+				<div className="flex gap-4 justify-between">
+					<p className="text-white koulen text-2xl" style={koulen.style}>{props.id}</p>
+					<IconContext.Provider value={{
+						color: "white", 
+						size: "2em", 
+						className: "h-full w-full hover:opacity-50 hover:cursor-pointer"
+						}}>
+						<div className="flex flex-row gap-x-4">
+							<motion.div 
+								className="w-full h-full"
+								variants={{
+									clicked : { scale: 0.7, transition: { duration: 0.05 } },
+									normal : { scale: 1 }
+								}}
+								animate={isCopyClicked ? 'clicked' : 'normal'}>
+								<IoCopy onClick={handleCopy} />
+							</motion.div>
+							<motion.div 
+								className="w-full h-full"
+								variants={{
+									clicked : { scale: 0.7, transition: { duration: 0.05 } },
+									normal : { scale: 1 }
+								}}
+								animate={isShareSocialClicked ? 'clicked' : 'normal'}>
+								<IoShareSocial onClick={handleShareSocial} />
+							</motion.div>
+							<motion.div
+								className="w-full h-full"
+								variants={{
+									clicked : {
+										translateX: midScreenDistance[0],
+										translateY: midScreenDistance[1],
+										scale: 20, 
+										position: "relative",
+										transition: { 
+											duration: 0.5 
+										} 
+									},
+									normal : { 
+										scale: 1, 
+										transition: { 
+											duration: 0.5 
+										}
+									}
+								}}
+								animate={isQRCodeClicked ? 'clicked' : 'normal'}
+							>
+								<div className="w-full h-full align-middle">
+									<QRCode
+										className={`hover:cursor-pointer 
+											${isQRCodeClicked ? "" : "hover:opacity-50"}`}
+										fgColor="white"
+										bgColor="black"
+										size={29}
+										value={"Temporary value"}
+										onClick={handleQRCodeClicked}
+										onMouseLeave={() => setIsQRCodeClicked(false)}
+									/>
+								</div>
+							</motion.div>
+						</div>
+					</IconContext.Provider>
 				</div>	
 			</div>
 			<motion.div className={"flex flex-wrap justify-around grow gap-6 text-white [&>div>h3]:text-2xl " + koulen.className}>
