@@ -4,6 +4,7 @@ import { motion, useAnimate } from "framer-motion"
 import { useEffect, useState } from "react";
 import { IoShareSocial, IoCopy } from "react-icons/io5";
 import { IconContext } from "react-icons";
+import { encode } from "../utils/dataEncoder";
 import QRCode from "react-qr-code" ;
 
 export type User = {
@@ -25,8 +26,10 @@ export default function MainView(props: User) {
 	const [midScreenDistance, setMidScreenDistance] = useState([0, 0])
 	const [isQRCodeTransforming, setIsQRCodeTransforming] = useState(false)
 
+	const encodedUserURL = process.env.NEXT_PUBLIC_DOMAIN_URL + "?user=" + encode(props)
+
 	const handleCopy = () => {
-		navigator.clipboard.writeText("YOUR-URL-STRING")
+		navigator.clipboard.writeText(encodedUserURL)
 		setIsCopyClicked(true)
 		setTimeout(() => setIsCopyClicked(false), 100)
 	}
@@ -115,7 +118,7 @@ export default function MainView(props: User) {
 										fgColor="white"
 										bgColor="black"
 										size={29}
-										value={"Temporary value"}
+										value={encodedUserURL}
 										onClick={handleQRCodeClicked}
 										onMouseLeave={() => isQRCodeTransforming || setIsQRCodeClicked(false)}
 									/>
