@@ -1,4 +1,5 @@
 import { Octokit } from "octokit"
+import { TFunctionResponse } from "./checkForRateLimit";
 
 type RepoStat = {
    totalRepos: Number,
@@ -6,7 +7,7 @@ type RepoStat = {
    lastYearCount: Number,
 }
 
-export default async function getRepoStats(user: string, repos: Array<any>,octokit: Octokit) : Promise<RepoStat | null> {
+export default async function getRepoStats(user: string, repos: Array<any>,octokit: Octokit) : Promise<RepoStat | TFunctionResponse | null> {
    let totalRepos = repos.length;
    let currentWork = Array(totalRepos).fill(false);
    let lastYearCount = 0;

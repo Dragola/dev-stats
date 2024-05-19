@@ -1,4 +1,5 @@
 import { Octokit } from "octokit"
+import { TFunctionResponse } from "./checkForRateLimit";
 
 type UserStats = {
    avatar_url: string,
@@ -10,13 +11,13 @@ type UserStats = {
    }>
 }
 
-export default async function getUserStats(user: string, octokit: Octokit): Promise<UserStats | null> {
+export default async function getUserStats(user: string, octokit: Octokit): Promise<UserStats | TFunctionResponse | null> {
    let userRes = await octokit.rest.users.getByUsername({
       username: user,
    })
 
    let userStat!: UserStats;
-   if (!userRes || userRes.status !== 200) return null;
+   if (userRes.status !== 200) return null;
 
    userStat = {
       avatar_url: userRes.data.avatar_url,
