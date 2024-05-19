@@ -10,32 +10,27 @@ type UserStats = {
    }>
 }
 
-export default async function getUserStats(user: string, octokit: Octokit) {
+export default async function getUserStats(user: string, octokit: Octokit): Promise<UserStats | null> {
    let userRes = await octokit.rest.users.getByUsername({
       username: user,
    })
 
-   let userStat!: UserStats ;
-   
-   if (userRes.status == 200) {
-      userStat = {
-         avatar_url: userRes.data.avatar_url,
-         blog: userRes.data.blog,
-         email: userRes.data.email,
-         socials: []
-      }
-   } else {
-      return undefined
+   let userStat!: UserStats;
+   if (!userRes || userRes.status !== 200) return null;
+
+   userStat = {
+      avatar_url: userRes.data.avatar_url,
+      blog: userRes.data.blog,
+      email: userRes.data.email,
+      socials: []
    }
 
-   let userSocialRes = await octokit.rest.users.listSocialAccountsForUser({
+   const userSocialRes = await octokit.rest.users.listSocialAccountsForUser({
       username: user,
-   })
+   });
 
-   if (userStat !== null && userSocialRes.status == 200) {
-      userStat.socials = userSocialRes.data      
-      return userStat
-   }
+   if (!userStat && userSocialRes.status !== 200) return null;
 
-   return undefined
+   userStat.socials = userSocialRes.data;   
+   return userStat;
 }
