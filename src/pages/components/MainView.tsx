@@ -150,7 +150,7 @@ export default function MainView(props: User) {
 					<h3>General Stats</h3>
 					<p style={GeistSans.style}>Commits: {props.commitCount}</p>
 					<p style={GeistSans.style}>Total Repos: {props.repoCount}</p>
-					<p style={GeistSans.style}>Profile Created: {new Date(props.timeStamp).toLocaleDateString(1)}</p>
+					<p style={GeistSans.style}>Profile Created: {new Date(props.timeStamp).toLocaleDateString()}</p>
 					{props.websiteUrl && 
 						<p style={GeistSans.style}>Website Url: <a className="text-blue-400" href={`${props.websiteUrl}`}>{props.websiteUrl}</a></p>
 					}	
