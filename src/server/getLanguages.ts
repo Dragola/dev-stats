@@ -1,7 +1,7 @@
 export default async function getLanguages(user: string, repos: Array<any>, octokit: Octokit): Promise<any> {
 	if (!user || !repos || !octokit) return null;
 
-	const languages = {};
+	const languages: Record<string, number> = {};
 	
 	for (const value of repos) {
 		const repoLanguages = await octokit.request('GET /repos/{owner}/{repo}/languages', {
@@ -12,7 +12,7 @@ export default async function getLanguages(user: string, repos: Array<any>, octo
 			}
 		});
 		
-		if (!repoLanguages) return null;
+		if (!repoLanguages || repoLanguages.status !== 200) return null;
 
 		for (const [language, size] of Object.entries(repoLanguages.data)) {
 			if (language in languages) languages[language] += size;
@@ -32,9 +32,8 @@ function getHighestLanguages (languages: any) {
 
 	for (let i= 0; i < 10; i++) {
 		const highestLanguageIndex = languageSizes.indexOf(Math.max(...languageSizes));
-		console.log(`highestLanguageIndex= ${highestLanguageIndex}`);
 		const key = Object.keys(languages)[highestLanguageIndex] || '';
-		if (key === '') return; //Note: Isn't possible
+		if (key === '') continue; //Note: There must be a key so this should never be possible
 		
 		highestLanguages[key] = languages[key];
 		languageSizes[highestLanguageIndex] = -1;

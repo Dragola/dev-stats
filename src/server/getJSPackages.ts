@@ -4,9 +4,8 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
    let allReposDependencies: Array<Array<string>> = [];
    let counters: {[key: string]: number} = {};
    for (let i = 0; i < repos.length; i++) {
-         let repo = repos[i];
-         if (repo.fork)
-            continue;
+         const repo = repos[i];
+         if (repo.fork) continue;
 
          let contentRes;
          try {
@@ -14,20 +13,20 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
                owner: user,
                repo:  repo.name,
                path: "package.json",
-            })
+            });
          } catch (_) {
             // Most likely due to 404
+            continue;
          }
 
-         if (contentRes !== undefined && contentRes.status == 200) {
-            let { dependencies  } = JSON.parse(atob(contentRes.data.content))
-            if (dependencies !== undefined)
-               allReposDependencies.push(Object.keys(dependencies))
-         }
+         if (!contentRes || contentRes.status !== 200 || !contentRes.data) return null;
+
+         const { dependencies } = JSON.parse(atob(contentRes.data.content))
+         if (dependencies !== undefined) allReposDependencies.push(Object.keys(dependencies))
    }
    for (let i = 0; i < allReposDependencies.length; i++) {
       for (let j = 0; j < allReposDependencies[i].length; j++) {
-         let currCounter = counters[allReposDependencies[i][j]]
+         const currCounter = counters[allReposDependencies[i][j]]
          counters[allReposDependencies[i][j]] = currCounter == undefined ? 1 : currCounter + 1;
       }
    }
