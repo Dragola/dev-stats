@@ -18,14 +18,23 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
          if (checkAPI.rateLimited || checkAPI.statusCode !== 200) return checkAPI;
 
          if (contentRes.status !== 200 || !contentRes.data) return null;
-         
-         const { dependencies } = JSON.parse(atob((contentRes.data as any).content))
+
+         if (!("content" in contentRes.data)) {
+            return undefined
+         }
+         const { dependencies } = JSON.parse(atob(contentRes.data.content))
          if (dependencies !== undefined) allReposDependencies.push(Object.keys(dependencies))
    }
    for (let i = 0; i < allReposDependencies.length; i++) {
-      for (let j = 0; j < allReposDependencies[i]!.length; j++) {
-         const currCounter = counters[allReposDependencies[i]![j]!]
-         counters[allReposDependencies[i]![j]!] = currCounter == undefined ? 1 : currCounter + 1;
+      const currRepo = allReposDependencies[i]
+      if (currRepo === undefined)
+         continue
+      for (let j = 0; j < currRepo.length; j++) {
+         const currDependency = currRepo[j]
+         if (currDependency === undefined)
+            continue
+         const currCounter = counters[currDependency]
+         counters[currDependency] = currCounter == undefined ? 1 : currCounter + 1;
       }
    }
 	return counters;
