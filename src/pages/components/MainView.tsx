@@ -25,7 +25,7 @@ export default function MainView(props: User) {
 	return (
 		<motion.div 
 			ref={scope}
-			className="gap-12 border-white border-b pb-4 flex flex-wrap justify-center">
+			className="gap-12 border-white border-b flex flex-wrap justify-center">
 			<div className="flex flex-col gap-12 deez">
 				<img
 					alt="profile"
