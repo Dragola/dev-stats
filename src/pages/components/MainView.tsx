@@ -26,12 +26,19 @@ export default function MainView(props: User) {
 	const [isQRCodeTransforming, setIsQRCodeTransforming] = useState(false)
 
 	const handleCopy = () => {
-		navigator.clipboard.writeText("YOUR-URL-STRING")
+		navigator.clipboard.writeText(
+`
+**Username:** ${props.id}
+**Languages:** made use of ${props.languages.map(([lang]) => lang)} in my github repos. ${props.packages ? `\n**Frameworks:** Web developer profiecent with: ${props.packages.map(([pack]) => pack)}`:""}${props.websiteUrl ? `\n**Personal Website:** ${props.websiteUrl}`:""}
+**Repo Count:** ${props.repoCount}
+**Commit Count:** ${props.commitCount}
+`
+)
 		setIsCopyClicked(true)
 		setTimeout(() => setIsCopyClicked(false), 100)
 	}
 	const handleShareSocial = () => {
-		navigator.clipboard.writeText("DISCORD-MDX")
+		navigator.clipboard.writeText("")
 		setIsShareSocialClicked(true)
 		setTimeout(() => setIsShareSocialClicked(false), 100)
 	}
@@ -142,6 +149,7 @@ export default function MainView(props: User) {
 					<h3>General Stats</h3>
 					<p style={GeistSans.style}>Commits: {props.commitCount}</p>
 					<p style={GeistSans.style}>Total Repos: {props.repoCount}</p>
+					<p style={GeistSans.style}>Profile Created: {new Date(props.timeStamp).toLocaleDateString(1)}</p>
 					{props.websiteUrl && 
 						<p style={GeistSans.style}>Website Url: <a className="text-blue-400" href={`${props.websiteUrl}`}>{props.websiteUrl}</a></p>
 					}	
