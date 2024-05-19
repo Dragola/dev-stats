@@ -1,7 +1,8 @@
 #root, html, body {
 	width: 100vw;
-	height: 100vh;
-	overflow: hidden;
+	height: 100%;
+	overflow-x: hidden;
+	@apply bg-black;
 }
 
 @tailwind base;

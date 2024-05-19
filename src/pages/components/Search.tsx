@@ -26,11 +26,14 @@ export default function SearchBar(props: {
 						totalRepos: number
 					}, 
 					languages: Record<string, number>,
+					timestamp: string,
+					frameworks: Record<string, number>,
 					userStats: { avatar_url:string, blog?: string },
 				}) => {
 					console.log(data)
 
 					const thing: User = {
+						timeStamp: data.timestamp,
 						profileImage: data.userStats.avatar_url,
 						id: "@" + value,
 						commitCount: data.commitStats,
@@ -39,7 +42,9 @@ export default function SearchBar(props: {
 						languages: Object.keys(data.languages).map((language) => {
 							return [language,data.languages[language]!]
 						}),
-						packages:[]
+						packages: Object.keys(data.frameworks).map((framework) => {
+							return [framework,data.frameworks[framework]!]
+						})
 					}
 
 					console.log(data, thing);
@@ -48,16 +53,24 @@ export default function SearchBar(props: {
 					console.error(err)	
 				})
 			}} placeholder="username" className="text-white rounded-full px-4 py-1 bg-gray-800 border border-gray-600"></input>
-			<div className="w-full flex gap-4">{props.users.map(({ id }) => {
+			<div className="w-full flex flex-wrap gap-4">{props.users.map(({ id, timeStamp }) => {
 				return (<motion.button whileHover={{
-					backgroundColor: "#ffffff",
-					color: "#374151"
+					backgroundColor: props.activeUser && props.activeUser === id + timeStamp ? "#DB665D" : "#ffffff",
+					color: props.activeUser && props.activeUser === id + timeStamp ?  "#ffffff" : "#374151",
 				}} animate={{
-					backgroundColor: props.activeUser && props.activeUser === id ? "#ffffff" : "#374151",
-					color: props.activeUser && props.activeUser === id ?  "#374151" : "#ffffff",
-				}} onClick={() => props.setActiveUser(id)} className={
+					backgroundColor: props.activeUser && props.activeUser === id + timeStamp ? "#ffffff" : "#374151",
+					color: props.activeUser && props.activeUser === id + timeStamp ?  "#374151" : "#ffffff",
+				}} onClick={() => {
+					if (props.activeUser === id + timeStamp) {
+						props.setUsers(props.users.filter((user) => {
+							return user.id + user.timeStamp !== id + timeStamp
+						}))	
+					} else {
+						props.setActiveUser(id + timeStamp)
+					}
+				}} className={
 					"rounded-full px-6 py-1" 
-				} key={id}>{id}</motion.button>)
+				} key={id+timeStamp}>{id}</motion.button>)
 			})}</div>	
 		</div>
 	)

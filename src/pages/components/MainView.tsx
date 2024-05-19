@@ -9,6 +9,7 @@ export type User = {
 	commitCount: number,
 	repoCount: number,
 	websiteUrl?: string,
+	timeStamp: string,
 	languages: [string, number][],
 	packages: [string, number][],
 }
@@ -19,24 +20,24 @@ export default function MainView(props: User) {
 	useEffect(() => {
 		void animate("div", {opacity: ["0%", "100%"]}, {duration: 0.8});
 		void animate(".deez", {x: ["-100vw", "0"]}, {duration: 0.5});
-	}, [props.profileImage])
+	}, [props.profileImage, animate])
 
 	return (
 		<motion.div 
 			ref={scope}
-			className="gap-6 flex">
-			<div className="flex flex-col gap-6 deez">
+			className="gap-12 border-white border-b flex flex-wrap justify-center">
+			<div className="flex flex-col gap-12 deez">
 				<img
 					alt="profile"
 					src={props.profileImage} 
-					className="border border-gray-700 rounded-full w-80 h-80"
+					className="max-lg:justify-center border border-gray-700 rounded-full object-cover object-center w-80 h-80"
 				>
 				</img>
-				<div className="flex gap-4 justify-between">
-					<p className="text-white koulen text-2xl" style={koulen.style}>{props.id}</p>
+				<div className="flex gap-4">
+					<p className="text-white koulen text-3xl" style={koulen.style}>{props.id}</p>
 				</div>	
 			</div>
-			<motion.div className={"flex gap-4 text-white [&>div>h3]:text-2xl " + koulen.className}>
+			<motion.div className={"flex flex-wrap justify-around grow gap-6 text-white [&>div>h3]:text-2xl " + koulen.className}>
 				<div>
 					<h3>Languages:</h3>
 					{props.languages.map(([language]) => {
