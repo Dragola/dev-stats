@@ -23,6 +23,7 @@ export default function MainView(props: User) {
 	const [isShareSocialClicked, setIsShareSocialClicked] = useState(false)
 	const [isQRCodeClicked, setIsQRCodeClicked] = useState(false)
 	const [midScreenDistance, setMidScreenDistance] = useState([0, 0])
+	const [isQRCodeTransforming, setIsQRCodeTransforming] = useState(false)
 
 	const handleCopy = () => {
 		navigator.clipboard.writeText("YOUR-URL-STRING")
@@ -103,6 +104,8 @@ export default function MainView(props: User) {
 										}
 									}
 								}}
+								onTransitionStart={() => setIsQRCodeTransforming(true)}
+								onTransitionEnd={() => setIsQRCodeTransforming(false)}
 								animate={isQRCodeClicked ? 'clicked' : 'normal'}
 							>
 								<div className="w-full h-full align-middle">
@@ -114,7 +117,7 @@ export default function MainView(props: User) {
 										size={29}
 										value={"Temporary value"}
 										onClick={handleQRCodeClicked}
-										onMouseLeave={() => setIsQRCodeClicked(false)}
+										onMouseLeave={() => isQRCodeTransforming || setIsQRCodeClicked(false)}
 									/>
 								</div>
 							</motion.div>
