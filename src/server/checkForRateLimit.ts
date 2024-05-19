@@ -6,9 +6,14 @@ export type TFunctionResponse = {
 
 export function checkForRateLimit(response: any): TFunctionResponse {
 
-    console.log(`response = ${response}`);
-
     const headers = response.headers;
+
+    if (!headers) return {
+        statusCode: response.status,
+        rateLimited: false,
+        timeToReset: -1
+    } 
+
     if ('x-ratelimit-remaining' in headers && headers['x-ratelimit-remaining'] === 0) {
         console.log(`RateLimited from GitHub!`);
         return {
@@ -18,7 +23,6 @@ export function checkForRateLimit(response: any): TFunctionResponse {
         }
     }
 
-    console.log(`Not RateLimited!`);
     return {
         statusCode: response.status,
         rateLimited: false,

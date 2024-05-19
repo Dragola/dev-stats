@@ -7,7 +7,7 @@ export default async function getCommitStats(user: string, octokit: Octokit): Pr
     })
 
     const checkAPI = checkForRateLimit(res);
-    if (checkAPI.rateLimited) return checkAPI;
+    if (checkAPI.rateLimited || checkAPI.statusCode !== 200) return checkAPI;
 
     if (!res.data || !res.data.total_count) return -1;
 

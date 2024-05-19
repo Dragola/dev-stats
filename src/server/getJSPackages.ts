@@ -8,20 +8,14 @@ export default async function getFrameworks(user: string, repos: Array<any>,octo
          const repo = repos[i];
          if (repo.fork) continue;
 
-         let contentRes;
-         try {
-            contentRes = await octokit.rest.repos.getContent({
-               owner: user,
-               repo:  repo.name,
-               path: "package.json",
-            });
-         } catch (_) {
-            // Most likely due to 404
-            continue;
-         }
-
+         const contentRes = await octokit.rest.repos.getContent({
+            owner: user,
+            repo:  repo.name,
+            path: "package.json",
+         });
+         
          const checkAPI = checkForRateLimit(contentRes);
-         if (checkAPI.rateLimited) return checkAPI;
+         if (checkAPI.rateLimited || checkAPI.statusCode !== 200) return checkAPI;
 
          if (contentRes.status !== 200 || !contentRes.data) return null;
 

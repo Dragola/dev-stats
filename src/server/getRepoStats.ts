@@ -1,5 +1,5 @@
 import { Octokit } from "octokit"
-import { TFunctionResponse } from "./checkForRateLimit";
+import { TFunctionResponse, checkForRateLimit } from "./checkForRateLimit";
 
 type RepoStat = {
    totalRepos: Number,
@@ -25,6 +25,9 @@ export default async function getRepoStats(user: string, repos: Array<any>,octok
             owner: user,
             repo: repoName
          });
+
+         const checkAPI = checkForRateLimit(repoName);
+         if (checkAPI.rateLimited || checkAPI.statusCode !== 200) return checkAPI;
 
          if (!repoStatRes || repoStatRes.status !== 200) {
             wasError = true;

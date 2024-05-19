@@ -17,7 +17,7 @@ export default async function getLanguages(user: string, repos: Array<any>, octo
 		});
 		
 		const checkAPI = checkForRateLimit(repoLanguages);
-		if (checkAPI.rateLimited) {
+		if (checkAPI.rateLimited || checkAPI.statusCode !== 200) {
 			loopErrorObj = checkAPI;
 			return;
 		}

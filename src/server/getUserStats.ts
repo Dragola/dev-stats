@@ -1,5 +1,5 @@
 import { Octokit } from "octokit"
-import { TFunctionResponse } from "./checkForRateLimit";
+import { TFunctionResponse, checkForRateLimit } from "./checkForRateLimit";
 
 type UserStats = {
    avatar_url: string,
@@ -16,6 +16,9 @@ export default async function getUserStats(user: string, octokit: Octokit): Prom
       username: user,
    })
 
+   const checkAPI = checkForRateLimit(userRes);
+   if (checkAPI.rateLimited || checkAPI.statusCode) return checkAPI;
+
    let userStat!: UserStats;
    if (userRes.status !== 200) return null;
 
@@ -30,7 +33,10 @@ export default async function getUserStats(user: string, octokit: Octokit): Prom
       username: user,
    });
 
-   if (!userStat && userSocialRes.status !== 200) return null;
+   const secondCheckAPI = checkForRateLimit(userRes);
+   if (secondCheckAPI.rateLimited || secondCheckAPI.statusCode) return secondCheckAPI;
+
+   if (userSocialRes.status !== 200) return null;
 
    userStat.socials = userSocialRes.data;   
    return userStat;
